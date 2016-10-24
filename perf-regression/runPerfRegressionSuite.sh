@@ -15,18 +15,18 @@ TEST_NAME=$(echo "${TEST_NAME}" | cut -d'.' -f1  | cut -d'/' -f2)
 echo "**********RUNNING TEST : "$TEST_NAME "***************"
 
 #Runing baseline test
-#echo "VERSION_SPEC=git=v"${BASELINE_VERSION} >> simulator.properties
-#./run 1 1 1m ${TEST_DIR}/${TEST_NAME} ${BASELINE_VERSION}_${TEST_NAME}
+echo "VERSION_SPEC=git=v"${BASELINE_VERSION} >> simulator.properties
+./run 1 1 1m ${TEST_DIR}/${TEST_NAME} ${BASELINE_VERSION}_${TEST_NAME}
 
 #Deleting baseline specific simulator properties
-#rm simulator.properties
+rm simulator.properties
 
 #Runing Master version test
-#echo "VERSION_SPEC=git=v"${MASTER_VERSION} >> simulator.properties
-#./run 1 1 1m ${TEST_DIR}/${TEST_NAME} ${MASTER_VERSION}_${TEST_NAME}
+echo "VERSION_SPEC=git=v"${MASTER_VERSION} >> simulator.properties
+./run 1 1 1m ${TEST_DIR}/${TEST_NAME} ${MASTER_VERSION}_${TEST_NAME}
 
 #Running benchmark/comparison report genertion report tool
-#$SIMULATOR_HOME/bin/benchmark-report ${outputDir}_${TEST_NAME} ${BASELINE_VERSION}_${TEST_NAME} ${MASTER_VERSION}_${TEST_NAME}
+$SIMULATOR_HOME/bin/benchmark-report ${outputDir}_${TEST_NAME} ${BASELINE_VERSION}_${TEST_NAME} ${MASTER_VERSION}_${TEST_NAME}
 
 #Parse benchmark/comparison report and get performance change
 ./parseBenchmarkingReport.sh ${outputDir}_${TEST_NAME}/report.html >> ${REPORT_CSV}

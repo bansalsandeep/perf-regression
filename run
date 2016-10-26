@@ -1,0 +1,33 @@
+#!/bin/bash
+
+members=${1:-1}
+clients=${2:-1}
+duration=${3:-1m}
+testsuite=${4:-test}
+outputDir=${5:-outputDir}
+
+memberHeapSZ=1G
+clientHeapSZ=512M
+
+partitions=271
+monitorSec=30
+
+gcArgs="-verbose:gc -Xloggc:verbosegc.log"
+gcArgs="${gcArgs} -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime"
+
+memberJvmArgs="-Dhazelcast.partition.count=${partitions}"
+memberJvmArgs="${memberJvmArgs} -Dhazelcast.health.monitoring.level=NOISY -Dhazelcast.health.monitoring.delay.seconds=${monitorSec}"
+memberJvmArgs="${memberJvmArgs} -Xmx${memberHeapSZ} -XX:+HeapDumpOnOutOfMemoryError"
+memberJvmArgs="${memberJvmArgs} ${gcArgs}"
+
+clientJvmArgs="-Xmx${clientHeapSZ} -XX:+HeapDumpOnOutOfMemoryError"
+clientJvmArgs="${clientJvmArgs} ${gcArgs}"
+
+coordinator --members ${members} \
+            --clients ${clients} \
+            --duration ${duration} \
+            --workerVmOptions "${memberJvmArgs}" \
+            --clientWorkerVmOptions "${clientJvmArgs}" \
+            --parallel \
+	    --sessionId ${outputDir} \
+             ${testsuite}.properties
